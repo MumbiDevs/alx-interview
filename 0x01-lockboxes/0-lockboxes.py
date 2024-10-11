@@ -1,3 +1,6 @@
+#!/usr/bin/python3
+"""Solves the lock boxes puzzle """
+
 def canUnlockAll(boxes):
     # Create a set to keep track of unlocked boxes
     unlocked = {0}  # Start with the first box
