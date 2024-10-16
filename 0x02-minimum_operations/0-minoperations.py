@@ -1,10 +1,6 @@
 #!/usr/bin/python3
 """method that calculates the fewest number of operations needed """
 
-#!/usr/bin/python3
-""" A Module for minoperations"""
-
-
 def minOperations(n):
     """
     minOperations
