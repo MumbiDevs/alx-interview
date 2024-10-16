@@ -1,24 +1,28 @@
 #!/usr/bin/python3
 """method that calculates the fewest number of operations needed """
 
+#!/usr/bin/python3
+""" A Module for minoperations"""
+
+
 def minOperations(n):
-    if n <= 1:
+    """
+    minOperations
+    Gets fewest # of operations needed to result in exactly n H characters
+    """
+    # all outputs should be at least 2 char: (min, Copy All => Paste)
+    if (n < 2):
         return 0
-
-    operations = 0
-    current = n
-
-    # We will find the factors of n
-    for i in range(2, n + 1):
-        while current % i == 0:  # while i is a factor of current
-            operations += i  # Copy + Paste operations to reach i
-            current //= i  # reduce current by factor i
-    return operations
-
-# Example usage
-if __name__ == "__main__":
-    n = 4
-    print("Min # of operations to reach {} char: {}".format(n, minOperations(n)))
-
-    n = 12
-    print("Min # of operations to reach {} char: {}".format(n, minOperations(n)))
+    ops, root = 0, 2
+    while root <= n:
+        # if n evenly divides by root
+        if n % root == 0:
+            # total even-divisions by root = total operations
+            ops += root
+            # set n to the remainder
+            n = n / root
+            # reduce root to find remaining smaller vals that evenly-divide n
+            root -= 1
+        # increment root until it evenly-divides n
+        root += 1
+    return ops
