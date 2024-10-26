@@ -1,4 +1,7 @@
 #!/usr/bin/python3
+
+"""Python 3 interpreter"""
+
 import sys
 import signal
 
