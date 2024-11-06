@@ -56,6 +56,16 @@ def signal_handler(sig, frame):
 signal.signal(signal.SIGINT, signal_handler)
 
 # Read from standard input line by line
-for line in sys.stdin:
-    process_line(line.strip())
+try:
+    for line in sys.stdin:
+        process_line(line.strip())
+
+    # Print statistics if fewer than 10 lines were processed (to handle single-line or partial cases)
+    if line_count % 10 != 0:
+        print_statistics()
+
+except Exception:
+    # Handle unexpected exceptions without stopping the script
+    pass
+
 
