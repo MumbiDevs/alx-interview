@@ -1,20 +1,8 @@
 #!/usr/bin/python3
 
-"""N queens solution finder module.
-"""
+"""N queens solution finder module."""
 
 import sys
-
-solutions = []
-"""The list of possible solutions to the N queens problem.
-"""
-n = 0
-"""The size of the chessboard.
-"""
-pos = None
-"""The list of possible positions on the chessboard.
-"""
-
 
 def get_input():
     """Retrieves and validates this program's argument.
@@ -22,14 +10,12 @@ def get_input():
     Returns:
         int: The size of the chessboard.
     """
-    global n
-    n = 0
     if len(sys.argv) != 2:
         print("Usage: nqueens N")
         sys.exit(1)
     try:
         n = int(sys.argv[1])
-    except Exception:
+    except ValueError:
         print("N must be a number")
         sys.exit(1)
     if n < 4:
@@ -37,78 +23,50 @@ def get_input():
         sys.exit(1)
     return n
 
-
-def is_attacking(pos0, pos1):
-    """Checks if the positions of two queens are in an attacking mode.
+def is_safe(board, row, col, n):
+    """Checks if a queen can be placed at board[row][col].
 
     Args:
-        pos0 (list or tuple): The first queen's position.
-        pos1 (list or tuple): The second queen's position.
+        board (list of int): Current state of the board.
+        row (int): Row to place the queen.
+        col (int): Column to place the queen.
+        n (int): Size of the chessboard.
 
     Returns:
-        bool: True if the queens are in an attacking position else False.
+        bool: True if safe, False otherwise.
     """
-    if (pos0[0] == pos1[0]) or (pos0[1] == pos1[1]):
-        return True
-    return abs(pos0[0] - pos1[0]) == abs(pos0[1] - pos1[1])
+    for i in range(row):
+        # Check the same column and both diagonals
+        if board[i] == col or \
+           board[i] - i == col - row or \
+           board[i] + i == col + row:
+            return False
+    return True
 
-
-def group_exists(group):
-    """Checks if a group exists in the list of solutions.
+def solve_nqueens(n):
+    """Solves the N queens problem and prints all solutions.
 
     Args:
-        group (list of integers): A group of possible positions.
-
-    Returns:
-        bool: True if it exists, otherwise False.
+        n (int): Size of the chessboard.
     """
-    global solutions
-    for stn in solutions:
-        i = 0
-        for stn_pos in stn:
-            for grp_pos in group:
-                if stn_pos[0] == grp_pos[0] and stn_pos[1] == grp_pos[1]:
-                    i += 1
-        if i == n:
-            return True
-    return False
-
-
-def build_solution(row, group):
-    """Builds a solution for the n queens problem.
-
-    Args:
-        row (int): The current row in the chessboard.
-        group (list of lists of integers): The group of valid positions.
-    """
-    global solutions
-    global n
-    if row == n:
-        tmp0 = group.copy()
-        if not group_exists(tmp0):
-            solutions.append(tmp0)
-    else:
+    def backtrack(row, board):
+        if row == n:
+            solutions.append([[i, board[i]] for i in range(n)])
+            return
         for col in range(n):
-            a = (row * n) + col
-            matches = zip(list([pos[a]]) * len(group), group)
-            used_positions = map(lambda x: is_attacking(x[0], x[1]), matches)
-            group.append(pos[a].copy())
-            if not any(used_positions):
-                build_solution(row + 1, group)
-            group.pop(len(group) - 1)
+            if is_safe(board, row, col, n):
+                board[row] = col
+                backtrack(row + 1, board)
+                board[row] = -1  # Reset for backtracking
 
+    solutions = []
+    board = [-1] * n
+    backtrack(0, board)
+    
+    for solution in solutions:
+        print(solution)
 
-def get_solutions():
-    """Gets the solutions for the given chessboard size.
-    """
-    global pos, n
-    pos = list(map(lambda x: [x // n, x % n], range(n ** 2)))
-    a = 0
-    group = []
-    build_solution(a, group)
-
-
-n = get_input()
-get_solutions()
-for solution in solutions:
-    print(solution)
+# Main Execution
+if __name__ == "__main__":
+    n = get_input()
+    solve_nqueens(n)
