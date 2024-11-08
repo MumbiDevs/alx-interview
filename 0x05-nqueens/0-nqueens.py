@@ -1,3 +1,8 @@
+#!/usr/bin/python3
+
+"""N queens solution finder module.
+"""
+
 import sys
 
 def print_usage_and_exit(message):
