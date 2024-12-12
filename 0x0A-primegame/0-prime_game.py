@@ -3,44 +3,25 @@
 """
 
 def isWinner(x, nums):
-    if not nums or x < 1:
+    """Determines the winner of a prime game session with `x` rounds.
+    """
+    if x < 1 or not nums:
         return None
-
-    # Determine the maximum number in nums
-    max_num = max(nums)
-
-    # Precompute primes up to max_num using a sieve
-    is_prime = [True] * (max_num + 1)
-    is_prime[0] = is_prime[1] = False  # 0 and 1 are not prime
-
-    for i in range(2, int(max_num ** 0.5) + 1):
-        if is_prime[i]:
-            for multiple in range(i * i, max_num + 1, i):
-                is_prime[multiple] = False
-
-    # Precompute the cumulative count of primes up to each number
-    prime_count = [0] * (max_num + 1)
-    for i in range(1, max_num + 1):
-        prime_count[i] = prime_count[i - 1] + (1 if is_prime[i] else 0)
-
-    # Determine the winner for each round
-    maria_wins = 0
-    ben_wins = 0
-
-    for n in nums:
-        if prime_count[n] % 2 == 0:
-            ben_wins += 1
-        else:
-            maria_wins += 1
-
-    # Determine the overall winner
-    if maria_wins > ben_wins:
-        return "Maria"
-    elif ben_wins > maria_wins:
-        return "Ben"
-    else:
+    marias_wins, bens_wins = 0, 0
+    # generate primes with a limit of the maximum number in nums
+    n = max(nums)
+    primes = [True for _ in range(1, n + 1, 1)]
+    primes[0] = False
+    for i, is_prime in enumerate(primes, 1):
+        if i == 1 or not is_prime:
+            continue
+        for j in range(i + i, n + 1, i):
+            primes[j - 1] = False
+    # filter the number of primes less than n in nums for each round
+    for _, n in zip(range(x), nums):
+        primes_count = len(list(filter(lambda x: x, primes[0: n])))
+        bens_wins += primes_count % 2 == 0
+        marias_wins += primes_count % 2 == 1
+    if marias_wins == bens_wins:
         return None
-
-# Example usage
-if __name__ == "__main__":
-    print("Winner:", isWinner(5, [2, 5, 1, 4, 3]))
+    return 'Maria' if marias_wins > bens_wins else 'Ben'
