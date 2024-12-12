@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-# Script to determine the winner of a prime game
+"""Prime game module.
+"""
 
 def isWinner(x, nums):
     if not nums or x < 1:
